@@ -3,8 +3,28 @@
 
   /* ------------------------------------------------------------------ *
    *  Themes. To add a game, add an entry here – nothing else to change.
-   *  e = emoji, n = name that is spoken when it is matched correctly.
+   *  e   = emoji picture      (or svg = drawn picture, plus k = unique key)
+   *  n   = name that is spoken when it is matched correctly.
    * ------------------------------------------------------------------ */
+
+  // Shapes are drawn (not emoji) so every one has a clearly different outline.
+  const svg = (inner, color) =>
+    `<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="${color}" stroke="${color}" stroke-width="8" stroke-linejoin="round">${inner}</g></svg>`;
+  const poly = (n, R, r, rot = -90) => Array.from({ length: n }, (_, i) => {
+    const a = (rot + (i * 360) / n) * Math.PI / 180, rad = r && i % 2 ? r : R;
+    return `${(50 + rad * Math.cos(a)).toFixed(1)},${(50 + rad * Math.sin(a)).toFixed(1)}`;
+  }).join(" ");
+  const SHAPES = [
+    { k: "circle",   n: "Circle",   svg: svg(`<circle cx="50" cy="50" r="38"/>`, "#ff5d5d") },
+    { k: "square",   n: "Square",   svg: svg(`<rect x="15" y="15" width="70" height="70" rx="4"/>`, "#3b9cff") },
+    { k: "triangle", n: "Triangle", svg: svg(`<polygon points="50,14 88,82 12,82"/>`, "#ffbe0b") },
+    { k: "star",     n: "Star",     svg: svg(`<polygon points="${poly(10, 44, 19)}"/>`, "#ff9f1c") },
+    { k: "heart",    n: "Heart",    svg: svg(`<path d="M50 84 C14 58 10 36 26 24 C38 16 48 24 50 32 C52 24 62 16 74 24 C90 36 86 58 50 84 Z"/>`, "#ff4f9a") },
+    { k: "diamond",  n: "Diamond",  svg: svg(`<polygon points="50,10 86,50 50,90 14,50"/>`, "#8f5cf7") },
+    { k: "oval",     n: "Oval",     svg: svg(`<ellipse cx="50" cy="50" rx="40" ry="26"/>`, "#2ec4b6") },
+    { k: "hexagon",  n: "Hexagon",  svg: svg(`<polygon points="${poly(6, 40, 0, 0)}"/>`, "#7bc950") },
+  ];
+
   const THEMES = [
     { id: "vehicles", label: "Vehicles", icon: "🚗", card: "#ffd9d9", bg: ["#ffe1e1", "#fff4f0"], items: [
       { e: "🚗", n: "Car" }, { e: "🚌", n: "Bus" }, { e: "🚒", n: "Fire engine" }, { e: "🚜", n: "Tractor" },
@@ -14,7 +34,7 @@
       { e: "🍎", n: "Apple" }, { e: "🍌", n: "Banana" }, { e: "🍇", n: "Grapes" }, { e: "🍓", n: "Strawberry" },
       { e: "🍊", n: "Orange" }, { e: "🍉", n: "Watermelon" }, { e: "🍐", n: "Pear" }, { e: "🍒", n: "Cherries" },
       { e: "🍍", n: "Pineapple" }, { e: "🍋", n: "Lemon" } ] },
-    { id: "clothes", label: "Clothes", icon: "👕", card: "#e4d9ff", bg: ["#ebe3ff", "#f8f5ff"], items: [
+    { id: "clothes", label: "Clothes", icon: "👕", card: "#d3dbff", bg: ["#dde3ff", "#f4f6ff"], items: [
       { e: "👕", n: "T-shirt" }, { e: "👖", n: "Trousers" }, { e: "🧦", n: "Socks" }, { e: "🧢", n: "Cap" },
       { e: "👗", n: "Dress" }, { e: "🧥", n: "Coat" }, { e: "👟", n: "Trainer" }, { e: "🧤", n: "Gloves" },
       { e: "🧣", n: "Scarf" }, { e: "👒", n: "Hat" } ] },
@@ -30,7 +50,21 @@
       { e: "🍕", n: "Pizza" }, { e: "🍔", n: "Burger" }, { e: "🍦", n: "Ice cream" }, { e: "🍩", n: "Doughnut" },
       { e: "🍪", n: "Biscuit" }, { e: "🍞", n: "Bread" }, { e: "🥕", n: "Carrot" }, { e: "🌽", n: "Corn" },
       { e: "🧁", n: "Cupcake" }, { e: "🥚", n: "Egg" } ] },
+    { id: "dinos", label: "Dinosaurs", icon: "🦖", card: "#c9efe0", bg: ["#cdf1e3", "#f1fffa"],
+      must: ["🦕", "🦖"],            // these two are in every round
+      items: [
+      { e: "🦕", n: "Long neck" }, { e: "🦖", n: "T-Rex" }, { e: "🦎", n: "Lizard" }, { e: "🐊", n: "Crocodile" },
+      { e: "🥚", n: "Egg" }, { e: "🦴", n: "Bone" }, { e: "🌋", n: "Volcano" } ] },
+    { id: "princess", label: "Princesses", icon: "👸", card: "#f3c9ff", bg: ["#f6d9ff", "#fdf3ff"], items: [
+      { e: "👸", n: "Princess" }, { e: "👑", n: "Crown" }, { e: "🏰", n: "Castle" }, { e: "🦄", n: "Unicorn" },
+      { e: "🧚", n: "Fairy" }, { e: "🧜‍♀️", n: "Mermaid" }, { e: "🪄", n: "Magic wand" }, { e: "👠", n: "Shoe" },
+      { e: "🐸", n: "Frog" }, { e: "🎀", n: "Bow" } ] },
+    { id: "shapes", label: "Shapes", icon: SHAPES[3].svg, card: "#fff1a8", bg: ["#fff5b8", "#fffdf0"], items: SHAPES },
   ];
+
+  // every picture needs a unique key; emoji use themselves, drawn shapes use k
+  const keyOf = (item) => item.k || item.e;
+  const glyphOf = (item) => item.svg || item.e;
 
   /* ------------------------------ helpers ------------------------------ */
   const $ = (id) => document.getElementById(id);
@@ -168,7 +202,10 @@
     $("win").hidden = true;
     setBackground(theme.bg);
 
-    const picks = shuffle(theme.items).slice(0, state.count);
+    // some themes always include certain pictures (e.g. dinosaurs in the dinosaur game)
+    const musts = theme.items.filter((i) => (theme.must || []).includes(keyOf(i))).slice(0, state.count);
+    const rest = shuffle(theme.items.filter((i) => !musts.includes(i))).slice(0, state.count - musts.length);
+    const picks = shuffle([...musts, ...rest]);
     state.remaining = picks.length;
 
     // shadows (targets) and pieces in different orders
@@ -182,8 +219,8 @@
     targetOrder.forEach((item) => {
       const slot = document.createElement("div");
       slot.className = "slot";
-      slot.dataset.key = item.e;
-      slot.innerHTML = `<span class="shadow">${item.e}</span>`;
+      slot.dataset.key = keyOf(item);
+      slot.innerHTML = `<span class="shadow">${glyphOf(item)}</span>`;
       targets.appendChild(slot);
       dots.insertAdjacentHTML("beforeend", `<span class="dot"></span>`);
     });
@@ -196,11 +233,11 @@
   function makePiece(item) {
     const p = document.createElement("div");
     p.className = "piece";
-    p.dataset.key = item.e;
+    p.dataset.key = keyOf(item);
     p.dataset.name = item.n;
     p.setAttribute("role", "button");
     p.setAttribute("aria-label", item.n);
-    p.innerHTML = `<span class="glyph">${item.e}</span>`;
+    p.innerHTML = `<span class="glyph">${glyphOf(item)}</span>`;
     enableDrag(p);
     return p;
   }

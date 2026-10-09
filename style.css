@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "Fredoka";
+  src: url("fonts/Fredoka-latin.woff2") format("woff2");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --bg1: #bfe6ff;
   --bg2: #e9f7ff;
@@ -17,7 +25,8 @@ html, body {
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
-  font-family: "Baloo 2", "Comic Sans MS", "Chalkboard SE", "Trebuchet MS", system-ui, sans-serif;
+  font-family: "Fredoka", ui-rounded, "SF Pro Rounded", "Arial Rounded MT Bold", "Nunito", system-ui, sans-serif;
+  font-weight: 500;
   color: var(--ink);
 }
 
@@ -45,57 +54,94 @@ button {
 
 /* ---------- Home ---------- */
 #home {
-  justify-content: center;
+  justify-content: flex-start;
   gap: 1.2vmin;
-  padding: 3vmin;
+  padding: 3vmin 3vmin 4vmin;
   overflow-y: auto;
   touch-action: pan-y;
 }
+/* centre the content when it fits, scroll from the top when it doesn't */
+#home > :first-child { margin-top: auto; }
+#home > :last-child { margin-bottom: auto; }
+
 .title {
   margin: 0;
-  font-size: clamp(2.2rem, 9vmin, 4.5rem);
-  letter-spacing: 1px;
-  color: #ff6b6b;
-  text-shadow: 0 4px 0 #fff, 0 7px 0 rgba(0,0,0,0.08);
+  font-size: clamp(2.4rem, 9vmin, 4.8rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+  white-space: nowrap;
 }
+.title span {
+  display: inline-block;
+  color: var(--c);
+  text-shadow: 0 0.06em 0 #fff, 0 0.11em 0 rgba(43, 58, 85, 0.14);
+}
+.title span:nth-child(odd) { transform: rotate(-4deg); }
+.title span:nth-child(even) { transform: rotate(3deg) translateY(-0.03em); }
+.title .amp { margin: 0 0.1em; font-size: 0.8em; }
 .subtitle {
   margin: 0 0 1vmin;
-  font-size: clamp(1.1rem, 4vmin, 2rem);
-  font-weight: 700;
+  font-size: clamp(1.1rem, 3.6vmin, 1.8rem);
+  font-weight: 500;
+  opacity: 0.8;
 }
 .themes {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: clamp(10px, 2.5vmin, 24px);
-  width: min(94vw, 760px);
-}
-@media (orientation: portrait) and (max-width: 520px) {
-  .themes { grid-template-columns: repeat(2, 1fr); }
+  gap: clamp(10px, 2.2vmin, 22px);
+  width: min(94vw, 720px);
 }
 .theme-card {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: clamp(10px, 2.5vmin, 22px) 8px;
+  gap: 2px;
+  padding: clamp(8px, 1.8vmin, 18px) 6px clamp(8px, 1.6vmin, 16px);
   border-radius: var(--radius);
   background: var(--card, #fff);
   color: var(--ink);
-  box-shadow: 0 8px 0 rgba(0,0,0,0.14);
+  box-shadow: 0 7px 0 rgba(43, 58, 85, 0.16);
   transition: transform 0.12s, box-shadow 0.12s;
 }
-.theme-card:active { transform: translateY(6px); box-shadow: 0 2px 0 rgba(0,0,0,0.14); }
-.theme-card .icon { font-size: clamp(3rem, 12vmin, 5.5rem); line-height: 1.1; }
-.theme-card .label { font-size: clamp(1rem, 3.4vmin, 1.7rem); font-weight: 800; }
+.theme-card:active { transform: translateY(5px); box-shadow: 0 2px 0 rgba(43, 58, 85, 0.16); }
+.theme-card .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 1.15em;
+  font-size: clamp(2.6rem, 9.5vmin, 4.8rem);
+  line-height: 1;
+}
+.theme-card .label { font-size: clamp(1rem, 3vmin, 1.5rem); font-weight: 600; }
+.theme-card .icon svg { width: 1em; height: 1em; display: block; }
 
 .level {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-top: 1.5vmin;
-  font-weight: 800;
-  font-size: clamp(0.9rem, 2.8vmin, 1.3rem);
+  font-weight: 600;
+  font-size: clamp(0.95rem, 2.8vmin, 1.3rem);
+}
+
+/* phones / tablets held upright: use the extra height */
+@media (orientation: portrait) {
+  .title { font-size: clamp(2.4rem, 13vw, 4.8rem); }
+  .subtitle { font-size: clamp(1.1rem, 5vw, 1.8rem); }
+  #home { gap: 2vh; }
+  .themes { gap: clamp(10px, 3vw, 22px); width: min(94vw, 640px); }
+  .theme-card { padding-block: clamp(12px, 3.5vw, 26px); }
+  .theme-card .icon { font-size: clamp(2.8rem, 15vw, 5.2rem); }
+  .theme-card .label { font-size: clamp(1rem, 4.2vw, 1.6rem); }
+  .level { font-size: clamp(1rem, 4vw, 1.4rem); margin-top: 1vh; }
+  .level-btn { width: clamp(44px, 11vw, 60px); height: clamp(44px, 11vw, 60px); }
+}
+
+@media (max-height: 520px) {
+  .subtitle { display: none; }
+  .theme-card .icon { font-size: clamp(2rem, 8vmin, 3rem); }
 }
 .level-btn {
   width: clamp(40px, 7vmin, 56px);
@@ -194,6 +240,9 @@ button {
 }
 .piece.dragging .glyph { transform: scale(1.15); }
 .glyph { display: block; transition: transform 0.12s; }
+
+/* drawn pictures (shapes) fill the same space an emoji would */
+.glyph svg, .shadow svg { display: block; width: 1em; height: 1em; }
 
 .piece.wrong { animation: shake 0.4s; }
 
